@@ -12,6 +12,7 @@ import {
 
 import listenerMiddleware from "@/flux/listenerMiddleware";
 import statusSlice from "@/flux/status/reducer";
+import storage from "@/flux/storage";
 import toastSlice from "@/flux/toast/reducer";
 export const makeStore = () => {
   const rootReducer = combineReducers({
@@ -22,7 +23,7 @@ export const makeStore = () => {
   const persistConfig = {
     key: "musikat-root",
     version: 1,
-    storage: localStorage,
+    storage,
     whitelist: [],
   };
 
