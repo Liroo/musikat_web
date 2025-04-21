@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  @apply h-full;
+}
+
+html {
+  @apply h-full;
+}
+
+@theme inline {
+  --color-background: var(--background);
+
+  /* Fonts */
+  --font-sans: var(--font-inter), "sans-serif";
+
+  /* Color */
+  --color-primary: #2d5bff;
+
+  --color-grey-0: #f5f5f5;
+  --color-grey-1: #e7e7e7;
+  --color-grey-2: #c1c1c1;
+  --color-grey-3: #9b9c9d;
+  --color-grey-4: #727377;
+  --color-grey-5: #424242;
+  --color-grey-6: #323333;
+  --color-grey-7: #252525;
+  --color-grey-8: #151515;
+  --color-grey-9: #121212;
+
+  /* Text */
+  --text-headline1: 30px;
+  --text-headline1--line-height: 34px;
+  --text-headline1--letter-spacing: -0.6px;
+  --text-headline1--font-weight: 700;
+
+  --text-headline2: 24px;
+  --text-headline2--line-height: 30px;
+  --text-headline2--letter-spacing: -0.48px;
+  --text-headline2--font-weight: 700;
+
+  --text-headline3: 20px;
+  --text-headline3--line-height: 26px;
+  --text-headline3--letter-spacing: -0.4px;
+  --text-headline3--font-weight: 700;
+
+  --text-headline4: 18px;
+  --text-headline4--line-height: 26px;
+  --text-headline4--letter-spacing: -0.36px;
+  --text-headline4--font-weight: 700;
+
+  --text-subtitle1: 17px;
+  --text-subtitle1--line-height: 18px;
+  --text-subtitle1--letter-spacing: -0.34px;
+  --text-subtitle1--font-weight: 600;
+
+  --text-subtitle2: 16px;
+  --text-subtitle2--line-height: 18px;
+  --text-subtitle2--letter-spacing: -0.32px;
+  --text-subtitle2--font-weight: 600;
+
+  --text-subtitle3: 15px;
+  --text-subtitle3--line-height: 18px;
+  --text-subtitle3--letter-spacing: -0.3px;
+  --text-subtitle3--font-weight: 600;
+
+  --text-body1: 17px;
+  --text-body1--line-height: 20px;
+  --text-body1--letter-spacing: -0.255px;
+  --text-body1--font-weight: 400;
+
+  --text-body2: 16px;
+  --text-body2--line-height: 20px;
+  --text-body2--letter-spacing: -0.24px;
+  --text-body2--font-weight: 400;
+
+  --text-body3: 15px;
+  --text-body3--line-height: 20px;
+  --text-body3--letter-spacing: -0.225px;
+  --text-body3--font-weight: 500;
+
+  --text-body4: 14px;
+  --text-body4--line-height: 18px;
+  --text-body4--letter-spacing: -0.21px;
+  --text-body4--font-weight: 500;
+
+  --text-details: 12px;
+  --text-details--line-height: 14px;
+  --text-details--letter-spacing: -0.12px;
+  --text-details--font-weight: 400;
+
+  /* Spacing */
+  --spacing-mobile: 440px;
+}
