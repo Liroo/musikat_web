@@ -22,7 +22,8 @@ html {
   --font-sans: var(--font-inter), "sans-serif";
 
   /* Color */
-  --color-primary: #2d5bff;
+  --color-primary: #cfff5e;
+  --color-secondary: #b9c5f9;
 
   --color-grey-0: #f5f5f5;
   --color-grey-1: #e7e7e7;
@@ -36,65 +37,69 @@ html {
   --color-grey-9: #121212;
 
   /* Text */
-  --text-headline1: 30px;
-  --text-headline1--line-height: 34px;
-  --text-headline1--letter-spacing: -0.6px;
-  --text-headline1--font-weight: 700;
+  /* Headline */
+  --text-headline1: 28px;
+  --text-headline1--line-height: 1.1;
+  --text-headline1--letter-spacing: -0.02em;
+  --text-headline1--font-weight: 800;
 
   --text-headline2: 24px;
-  --text-headline2--line-height: 30px;
-  --text-headline2--letter-spacing: -0.48px;
+  --text-headline2--line-height: 1.1;
+  --text-headline2--letter-spacing: -0.02em;
   --text-headline2--font-weight: 700;
 
   --text-headline3: 20px;
-  --text-headline3--line-height: 26px;
-  --text-headline3--letter-spacing: -0.4px;
+  --text-headline3--line-height: 1.1;
+  --text-headline3--letter-spacing: -0.02em;
   --text-headline3--font-weight: 700;
 
   --text-headline4: 18px;
-  --text-headline4--line-height: 26px;
-  --text-headline4--letter-spacing: -0.36px;
+  --text-headline4--line-height: 1.1;
+  --text-headline4--letter-spacing: -0.02em;
   --text-headline4--font-weight: 700;
 
+  /* Subtitle */
   --text-subtitle1: 17px;
-  --text-subtitle1--line-height: 18px;
-  --text-subtitle1--letter-spacing: -0.34px;
+  --text-subtitle1--line-height: 1.1;
+  --text-subtitle1--letter-spacing: -0.02em;
   --text-subtitle1--font-weight: 600;
 
   --text-subtitle2: 16px;
-  --text-subtitle2--line-height: 18px;
-  --text-subtitle2--letter-spacing: -0.32px;
+  --text-subtitle2--line-height: 1.1;
+  --text-subtitle2--letter-spacing: -0.02em;
   --text-subtitle2--font-weight: 600;
 
   --text-subtitle3: 15px;
-  --text-subtitle3--line-height: 18px;
-  --text-subtitle3--letter-spacing: -0.3px;
+  --text-subtitle3--line-height: 1.1;
+  --text-subtitle3--letter-spacing: -0.02em;
   --text-subtitle3--font-weight: 600;
 
+  /* Body */
   --text-body1: 17px;
-  --text-body1--line-height: 20px;
-  --text-body1--letter-spacing: -0.255px;
-  --text-body1--font-weight: 400;
+  --text-body1--line-height: 1.1;
+  --text-body1--letter-spacing: -0.02em;
+  --text-body1--font-weight: 500;
 
   --text-body2: 16px;
-  --text-body2--line-height: 20px;
-  --text-body2--letter-spacing: -0.24px;
+  --text-body2--line-height: 1.1;
+  --text-body2--letter-spacing: -0.02em;
   --text-body2--font-weight: 400;
 
   --text-body3: 15px;
-  --text-body3--line-height: 20px;
-  --text-body3--letter-spacing: -0.225px;
+  --text-body3--line-height: 1.1;
+  --text-body3--letter-spacing: -0.02em;
   --text-body3--font-weight: 500;
 
   --text-body4: 14px;
-  --text-body4--line-height: 18px;
-  --text-body4--letter-spacing: -0.21px;
+  --text-body4--line-height: 1.1;
+  --text-body4--letter-spacing: -0.02em;
   --text-body4--font-weight: 500;
 
+  /* Details */
   --text-details: 12px;
-  --text-details--line-height: 14px;
-  --text-details--letter-spacing: -0.12px;
-  --text-details--font-weight: 400;
+  --text-details--line-height: 1.1;
+  --text-details--letter-spacing: -0.02em;
+  --text-details--font-weight: 300;
 
   /* Spacing */
   --spacing-mobile: 440px;
