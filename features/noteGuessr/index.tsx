@@ -1,48 +1,79 @@
-import micInput from "@/features/noteGuessr/pda/micInput";
-import { noteFromPitch, noteName } from "@/features/noteGuessr/pda/utils";
-import { YIN } from "@/features/noteGuessr/pda/yin";
-import { useCallback, useRef, useState } from "react";
+import UIButtonDepth from "@/components/ui/button/depth";
+import useNoteGuessr from "@/features/noteGuessr/engine/useNoteGuessr";
+import NoteGuessrNoteToFind from "@/features/noteGuessr/noteToFind";
+import { twMerge } from "@/utils/twMerge";
+import { useEffect, useState } from "react";
+import { useTranslations } from "use-intl";
 
 export default function NoteGuessr() {
-  const rafId = useRef<number | null>(null);
-  const yinRef = useRef<ReturnType<typeof YIN> | null>(null);
-  const [frequency, setFrequency] = useState<number | null>(null);
+  const t = useTranslations();
+  const [success, setSuccess] = useState(false);
+  const noteGuessr = useNoteGuessr({
+    onSuccess: () => {
+      setSuccess(true);
+    },
+  });
 
-  const raf = useCallback(() => {
-    if (yinRef.current) {
-      const analyser = micInput.getAnalyser();
-      if (!analyser) return;
-
-      const frequencyData = new Float32Array(analyser?.fftSize ?? 0);
-
-      analyser.getFloatTimeDomainData(frequencyData);
-
-      const pitch = yinRef.current(frequencyData);
-      setFrequency(pitch);
-
-      rafId.current = requestAnimationFrame(raf);
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        setSuccess(false);
+      }, 1000);
     }
-  }, []);
+  }, [success]);
 
   const onClick = async () => {
-    if (micInput.getStream() === null) {
-      await micInput.requestAudioInput();
-      yinRef.current = YIN({
-        sampleRate: micInput.getAudioContext()?.sampleRate ?? 44100,
-      });
-
-      rafId.current = requestAnimationFrame(raf);
+    if (noteGuessr.playing) {
+      noteGuessr.stop();
     } else {
-      micInput.cleanup();
+      await noteGuessr.start();
     }
   };
 
   return (
-    <div>
-      <button onClick={onClick}>Press me</button>
-      <p>{frequency}</p>
-      <p>{noteFromPitch(frequency ?? 0)}</p>
-      <p>{noteName(noteFromPitch(frequency ?? 0))}</p>
+    <div
+      className={twMerge(
+        "flex flex-col h-full w-full justify-center items-center transition-colors duration-150 relative",
+        success ? "bg-primary" : "bg-secondary"
+      )}
+    >
+      <div className="bg-white rounded-[16px] border border-black p-[40px] w-[400px]">
+        <div className="relative z-10 flex flex-col gap-[40px] justify-center items-center">
+          {noteGuessr.stringToFind && noteGuessr.noteToFind ? (
+            <NoteGuessrNoteToFind
+              stringToFind={noteGuessr.stringToFind}
+              noteToFind={noteGuessr.noteToFind}
+            />
+          ) : null}
+
+          <div className="flex flex-col self-baseline">
+            <p className="text-body2 text-grey-5">
+              {t("features.noteGuessr.currentNote")}
+            </p>
+            <p className="text-[60px]">
+              {noteGuessr.note ? (
+                <>
+                  {t(`note.eu.${noteGuessr.note?.name}`)}
+                  {noteGuessr.note?.modifier}
+                </>
+              ) : (
+                t("common.none")
+              )}
+            </p>
+          </div>
+
+          <UIButtonDepth
+            onClick={onClick}
+            className={noteGuessr.playing ? "bg-secondary" : "bg-primary"}
+          >
+            <p>
+              {noteGuessr.playing
+                ? t("features.noteGuessr.stop")
+                : t("features.noteGuessr.start")}
+            </p>
+          </UIButtonDepth>
+        </div>
+      </div>
     </div>
   );
 }

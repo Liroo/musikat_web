@@ -1,6 +1,12 @@
-import commons from "./commons.json";
+import common from "./common.json";
+import noteGuessr from "./features/noteGuessr.json";
+import note from "./note.json";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  commons,
+  common,
+  note,
+  features: {
+    noteGuessr,
+  },
 };

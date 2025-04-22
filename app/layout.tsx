@@ -31,7 +31,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${inter.variable} ${monumentExtended.variable} antialiased`}
+        className={`${inter.variable} ${monumentExtended.variable} antialiased leading-[1.1] tracking-[-0.02em]`}
       >
         <NextIntlClientProvider>
           <StoreProvider>{children}</StoreProvider>
