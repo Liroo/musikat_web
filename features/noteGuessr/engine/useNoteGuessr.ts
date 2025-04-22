@@ -7,21 +7,40 @@ import {
   Note,
   noteToStr,
   NoteWithOctave,
+  SEMITONE_LIST,
 } from "@/types/note";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+export type NoteGuessr = {
+  playing: boolean;
+  start: () => Promise<void>;
+  stop: () => void;
+  frequency: number | null;
+  note: Note | null;
+  stringToFind: GuitarString | null;
+  noteToFind: Note | null;
+  maintainedNote: Note | null;
+  startTime: number | null;
+};
+
 export interface NoteGuessrConfig {
   msToMaintainNote: number;
+  allowedStrings: GuitarString[];
+  allowedSemitone: Note[];
   onSuccess: (note: Note) => void;
 }
 
 const DEFAULT_CONFIG: NoteGuessrConfig = {
   msToMaintainNote: 500,
+  allowedStrings: Object.keys(GUITAR_STRING_NOTES) as GuitarString[],
+  allowedSemitone: SEMITONE_LIST,
   onSuccess: () => {},
 };
 
-export default function useNoteGuessr(config: Partial<NoteGuessrConfig> = {}) {
-  config = { ...DEFAULT_CONFIG, ...config };
+export default function useNoteGuessr(
+  partialConfig: Partial<NoteGuessrConfig> = {}
+): NoteGuessr {
+  const config: NoteGuessrConfig = { ...DEFAULT_CONFIG, ...partialConfig };
 
   const [startTime, setStartTime] = useState<number | null>(null);
   const rafId = useRef<number | null>(null);
@@ -34,14 +53,29 @@ export default function useNoteGuessr(config: Partial<NoteGuessrConfig> = {}) {
   const [noteToFind, setNoteToFind] = useState<Note | null>(null);
 
   const newNoteToFind = useCallback(() => {
-    const guitarString: GuitarString = Object.keys(GUITAR_STRING_NOTES)[
-      Math.floor(Math.random() * Object.keys(GUITAR_STRING_NOTES).length)
-    ] as GuitarString;
+    const guitarString: GuitarString =
+      config.allowedStrings[
+        Math.floor(Math.random() * config.allowedStrings.length)
+      ];
     setStringToFind(guitarString as GuitarString);
     const notes: NoteWithOctave[] = GUITAR_STRING_NOTES[guitarString];
-    const note = notes[Math.floor(Math.random() * notes.length)];
-    setNoteToFind(note);
-  }, []);
+    for (let i = 0; i < 1000; i++) {
+      // take a random note from the notes array
+      const note = notes[Math.floor(Math.random() * notes.length)];
+
+      // check if note is in the allowed semitone array with any octave
+      if (
+        config.allowedSemitone.some(
+          (allowedNote) =>
+            allowedNote.name === note.name &&
+            allowedNote.modifier === note.modifier
+        )
+      ) {
+        setNoteToFind(note);
+        break;
+      }
+    }
+  }, [config.allowedSemitone, config.allowedStrings]);
 
   useEffect(() => {
     if (noteToFind && maintainedNote) {
