@@ -25,7 +25,7 @@ export function YIN(params: Partial<YinConfig> = {}) {
       rms += val * val;
     }
     rms = Math.sqrt(rms / SIZE);
-    if (rms < 0.002)
+    if (rms < 0.001)
       // not enough signal
       return -1;
 
