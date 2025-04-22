@@ -23,6 +23,7 @@ const DEFAULT_CONFIG: NoteGuessrConfig = {
 export default function useNoteGuessr(config: Partial<NoteGuessrConfig> = {}) {
   config = { ...DEFAULT_CONFIG, ...config };
 
+  const [startTime, setStartTime] = useState<number | null>(null);
   const rafId = useRef<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const [frequency, setFrequency] = useState<number | null>(null);
@@ -79,6 +80,7 @@ export default function useNoteGuessr(config: Partial<NoteGuessrConfig> = {}) {
 
       rafId.current = requestAnimationFrame(raf);
       newNoteToFind();
+      setStartTime(Date.now());
       setPlaying(true);
     }
   }, [raf, newNoteToFind]);
@@ -132,5 +134,6 @@ export default function useNoteGuessr(config: Partial<NoteGuessrConfig> = {}) {
     stringToFind,
     noteToFind,
     maintainedNote,
+    startTime,
   };
 }

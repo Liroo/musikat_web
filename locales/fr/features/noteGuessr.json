@@ -3,5 +3,6 @@
   "note": "Note",
   "start": "Démarrer",
   "stop": "Arrêter",
-  "currentNote": "Note actuelle"
+  "currentNote": "Note actuelle",
+  "time": "Temps"
 }

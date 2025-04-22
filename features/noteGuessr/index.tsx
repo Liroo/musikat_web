@@ -1,6 +1,7 @@
 import UIButtonDepth from "@/components/ui/button/depth";
 import useNoteGuessr from "@/features/noteGuessr/engine/useNoteGuessr";
 import NoteGuessrNoteToFind from "@/features/noteGuessr/noteToFind";
+import { formatTime } from "@/utils/format";
 import { twMerge } from "@/utils/twMerge";
 import { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
@@ -30,6 +31,20 @@ export default function NoteGuessr() {
     }
   };
 
+  const [timer, setTimer] = useState<number>(0);
+
+  useEffect(() => {
+    if (!noteGuessr.playing) return;
+    if (!noteGuessr.startTime) return;
+    const interval = setInterval(() => {
+      if (noteGuessr.playing && noteGuessr.startTime) {
+        const time = Math.floor((Date.now() - noteGuessr.startTime) / 1000);
+        setTimer(time);
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, [noteGuessr.playing, noteGuessr.startTime]);
+
   return (
     <div
       className={twMerge(
@@ -46,20 +61,30 @@ export default function NoteGuessr() {
             />
           ) : null}
 
-          <div className="flex flex-col self-baseline">
-            <p className="text-body2 text-grey-5">
-              {t("features.noteGuessr.currentNote")}
-            </p>
-            <p className="text-[60px]">
-              {noteGuessr.note ? (
-                <>
-                  {t(`note.eu.${noteGuessr.note?.name}`)}
-                  {noteGuessr.note?.modifier}
-                </>
-              ) : (
-                t("common.none")
-              )}
-            </p>
+          <div className="flex flex-row justify-between w-full">
+            <div className="flex flex-col self-baseline">
+              <p className="text-body2 text-grey-5">
+                {t("features.noteGuessr.currentNote")}
+              </p>
+              <p className="text-[60px]">
+                {noteGuessr.note ? (
+                  <>
+                    {t(`note.eu.${noteGuessr.note?.name}`)}
+                    {noteGuessr.note?.modifier}
+                  </>
+                ) : (
+                  t("common.none")
+                )}
+              </p>
+            </div>
+            {noteGuessr.playing ? (
+              <div className="flex flex-col self-baseline">
+                <p className="text-body2 text-grey-5">
+                  {t("features.noteGuessr.time")}
+                </p>
+                <p className="text-[60px]">{formatTime(timer)}</p>
+              </div>
+            ) : null}
           </div>
 
           <UIButtonDepth
