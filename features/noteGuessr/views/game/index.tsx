@@ -1,14 +1,9 @@
 import UIButtonDepth from "@/components/ui/button/depth";
 import useNoteGuessr from "@/features/noteGuessr/engine/useNoteGuessr";
-import NoteGuessrPlaying from "@/features/noteGuessr/playing";
-import NoteGuessrSettings from "@/features/noteGuessr/settings";
-import {
-  GUITAR_STRING_NOTES,
-  GuitarString,
-  Note,
-  SEMITONE_LIST,
-} from "@/types/note";
+import NoteGuessrPlaying from "@/features/noteGuessr/views/game/playing";
+import NoteGuessrSettings from "@/features/noteGuessr/views/game/settings";
 import { twMerge } from "@/utils/twMerge";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 
@@ -16,16 +11,7 @@ export default function NoteGuessr() {
   const t = useTranslations();
   const [success, setSuccess] = useState(false);
 
-  const [settings, setSettings] = useState<{
-    allowedStrings: GuitarString[];
-    allowedSemitone: Note[];
-  }>({
-    allowedStrings: Object.keys(GUITAR_STRING_NOTES) as GuitarString[],
-    allowedSemitone: SEMITONE_LIST,
-  });
-
   const noteGuessr = useNoteGuessr({
-    ...settings,
     onSuccess: () => {
       setSuccess(true);
     },
@@ -59,23 +45,27 @@ export default function NoteGuessr() {
           {noteGuessr.playing ? (
             <NoteGuessrPlaying noteGuessr={noteGuessr} />
           ) : (
-            <NoteGuessrSettings
-              allowedStrings={settings.allowedStrings}
-              allowedSemitone={settings.allowedSemitone}
-              setSettings={setSettings}
-            />
+            <NoteGuessrSettings />
           )}
 
-          <UIButtonDepth
-            onClick={onClick}
-            className={noteGuessr.playing ? "bg-secondary" : "bg-primary"}
-          >
-            <p>
-              {noteGuessr.playing
-                ? t("features.noteGuessr.stop")
-                : t("features.noteGuessr.start")}
-            </p>
-          </UIButtonDepth>
+          <div className="flex flex-col justify-center items-center gap-[10px]">
+            <Link href="/noteGuessr/stats">
+              <p className="underline">
+                {t("features.noteGuessr.stats.title")} →
+              </p>
+            </Link>
+
+            <UIButtonDepth
+              onClick={onClick}
+              className={noteGuessr.playing ? "bg-secondary" : "bg-primary"}
+            >
+              <p>
+                {noteGuessr.playing
+                  ? t("features.noteGuessr.stop")
+                  : t("features.noteGuessr.start")}
+              </p>
+            </UIButtonDepth>
+          </div>
         </div>
       </div>
     </div>

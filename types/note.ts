@@ -11,6 +11,10 @@ export interface NoteWithOctave extends Note {
   octave: number;
 }
 
+export interface NoteWithOctaveAndString extends NoteWithOctave {
+  string: GuitarString;
+}
+
 export const SEMITONE_LIST: Note[] = [
   { name: "c", modifier: "" },
   { name: "c", modifier: "#" },
@@ -26,8 +30,22 @@ export const SEMITONE_LIST: Note[] = [
   { name: "b", modifier: "" },
 ];
 
-export const noteToStr = (note: Note | null) =>
-  note ? `${note.name}${note.octave}${note.modifier}` : "";
+export const noteToNoteId = (
+  note:
+    | (Partial<NoteWithOctaveAndString> & {
+        name: string;
+        modifier: string;
+      })
+    | null
+) => {
+  const array = [note?.name, note?.octave, note?.modifier, note?.string];
+  return array.map((item) => item || "").join(":");
+};
+
+export const noteIdToNote = (noteId: string) => {
+  const [name, octave, modifier, string] = noteId.split(":");
+  return { name, modifier, octave, string };
+};
 
 /**
  * Given a note+octave, returns its frequency in Hz (A4 = 440 Hz).
@@ -72,7 +90,7 @@ export const GUITAR_E_STRING_MIN: NoteWithOctave = {
 };
 export const GUITAR_E_STRING_MAX: NoteWithOctave = {
   name: "d",
-  modifier: "",
+  modifier: "#",
   octave: 3,
 };
 
@@ -83,7 +101,7 @@ export const GUITAR_A_STRING_MIN: NoteWithOctave = {
 };
 export const GUITAR_A_STRING_MAX: NoteWithOctave = {
   name: "g",
-  modifier: "",
+  modifier: "#",
   octave: 3,
 };
 
@@ -94,7 +112,7 @@ export const GUITAR_D_STRING_MIN: NoteWithOctave = {
 };
 export const GUITAR_D_STRING_MAX: NoteWithOctave = {
   name: "c",
-  modifier: "",
+  modifier: "#",
   octave: 4,
 };
 
@@ -105,7 +123,7 @@ export const GUITAR_G_STRING_MIN: NoteWithOctave = {
 };
 export const GUITAR_G_STRING_MAX: NoteWithOctave = {
   name: "f",
-  modifier: "",
+  modifier: "#",
   octave: 4,
 };
 
@@ -116,7 +134,7 @@ export const GUITAR_B_STRING_MIN: NoteWithOctave = {
 };
 export const GUITAR_B_STRING_MAX: NoteWithOctave = {
   name: "a",
-  modifier: "",
+  modifier: "#",
   octave: 4,
 };
 export const GUITAR_E_HIGH_STRING_MIN: NoteWithOctave = {
@@ -126,33 +144,39 @@ export const GUITAR_E_HIGH_STRING_MIN: NoteWithOctave = {
 };
 export const GUITAR_E_HIGH_STRING_MAX: NoteWithOctave = {
   name: "d",
-  modifier: "",
+  modifier: "#",
   octave: 5,
 };
 
 export const GUITAR_E_STRING_NOTES = guitarNoteRange(
   GUITAR_E_STRING_MIN,
-  GUITAR_E_STRING_MAX
+  GUITAR_E_STRING_MAX,
+  "e"
 );
 export const GUITAR_A_STRING_NOTES = guitarNoteRange(
   GUITAR_A_STRING_MIN,
-  GUITAR_A_STRING_MAX
+  GUITAR_A_STRING_MAX,
+  "a"
 );
 export const GUITAR_D_STRING_NOTES = guitarNoteRange(
   GUITAR_D_STRING_MIN,
-  GUITAR_D_STRING_MAX
+  GUITAR_D_STRING_MAX,
+  "d"
 );
 export const GUITAR_G_STRING_NOTES = guitarNoteRange(
   GUITAR_G_STRING_MIN,
-  GUITAR_G_STRING_MAX
+  GUITAR_G_STRING_MAX,
+  "g"
 );
 export const GUITAR_B_STRING_NOTES = guitarNoteRange(
   GUITAR_B_STRING_MIN,
-  GUITAR_B_STRING_MAX
+  GUITAR_B_STRING_MAX,
+  "b"
 );
 export const GUITAR_E_HIGH_STRING_NOTES = guitarNoteRange(
   GUITAR_E_HIGH_STRING_MIN,
-  GUITAR_E_HIGH_STRING_MAX
+  GUITAR_E_HIGH_STRING_MAX,
+  "e_high"
 );
 
 export type GuitarString = "e" | "a" | "d" | "g" | "b" | "e_high";
@@ -168,9 +192,10 @@ export const GUITAR_STRING_NOTES: Record<GuitarString, NoteWithOctave[]> = {
 
 export function guitarNoteRange(
   minNote: NoteWithOctave,
-  maxNote: NoteWithOctave
-): NoteWithOctave[] {
-  const notes: NoteWithOctave[] = [];
+  maxNote: NoteWithOctave,
+  stringName: GuitarString
+): NoteWithOctaveAndString[] {
+  const notes: NoteWithOctaveAndString[] = [];
   for (let octave = minNote.octave; octave <= maxNote.octave; octave++) {
     const startNoteIndex = SEMITONE_LIST.findIndex(
       (n) => n.name === minNote.name && n.modifier === minNote.modifier
@@ -188,6 +213,7 @@ export function guitarNoteRange(
         name: SEMITONE_LIST[i].name,
         modifier: SEMITONE_LIST[i].modifier,
         octave,
+        string: stringName,
       });
     }
   }

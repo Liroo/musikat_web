@@ -1,13 +1,18 @@
 import micInput from "@/features/noteGuessr/pda/micInput";
 import { YIN } from "@/features/noteGuessr/pda/yin";
+import { useAppDispatch, useAppSelector } from "@/flux/hooks";
+import { noteGuessrAddAverageTime } from "@/flux/noteguessr/reducer";
+import {
+  selectNoteGuessrAverageTimeAllNotes,
+  selectNoteGuessrSettings,
+} from "@/flux/noteguessr/selector";
 import {
   frequencyToNote,
   GUITAR_STRING_NOTES,
   GuitarString,
   Note,
-  noteToStr,
-  NoteWithOctave,
-  SEMITONE_LIST,
+  noteToNoteId,
+  NoteWithOctaveAndString,
 } from "@/types/note";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -17,23 +22,16 @@ export type NoteGuessr = {
   stop: () => void;
   frequency: number | null;
   note: Note | null;
-  stringToFind: GuitarString | null;
-  noteToFind: Note | null;
+  noteToFind: NoteWithOctaveAndString | null;
   maintainedNote: Note | null;
   startTime: number | null;
 };
 
 export interface NoteGuessrConfig {
-  msToMaintainNote: number;
-  allowedStrings: GuitarString[];
-  allowedSemitone: Note[];
   onSuccess: (note: Note) => void;
 }
 
 const DEFAULT_CONFIG: NoteGuessrConfig = {
-  msToMaintainNote: 500,
-  allowedStrings: Object.keys(GUITAR_STRING_NOTES) as GuitarString[],
-  allowedSemitone: SEMITONE_LIST,
   onSuccess: () => {},
 };
 
@@ -42,6 +40,8 @@ export default function useNoteGuessr(
 ): NoteGuessr {
   const config: NoteGuessrConfig = { ...DEFAULT_CONFIG, ...partialConfig };
 
+  const settings = useAppSelector(selectNoteGuessrSettings);
+
   const [startTime, setStartTime] = useState<number | null>(null);
   const rafId = useRef<number | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -49,43 +49,122 @@ export default function useNoteGuessr(
   const yinRef = useRef<ReturnType<typeof YIN> | null>(null);
   const [maintainedNote, setMaintainedNote] = useState<Note | null>(null);
 
-  const [stringToFind, setStringToFind] = useState<GuitarString | null>(null);
-  const [noteToFind, setNoteToFind] = useState<Note | null>(null);
+  const [noteToFind, setNoteToFind] = useState<NoteWithOctaveAndString | null>(
+    null
+  );
 
-  const newNoteToFind = useCallback(() => {
-    const guitarString: GuitarString =
-      config.allowedStrings[
-        Math.floor(Math.random() * config.allowedStrings.length)
-      ];
-    setStringToFind(guitarString as GuitarString);
-    const notes: NoteWithOctave[] = GUITAR_STRING_NOTES[guitarString];
-    for (let i = 0; i < 1000; i++) {
-      // take a random note from the notes array
-      const note = notes[Math.floor(Math.random() * notes.length)];
+  const [noteStartTime, setNoteStartTime] = useState<number>(0);
+  const dispatch = useAppDispatch();
 
-      // check if note is in the allowed semitone array with any octave
-      if (
-        config.allowedSemitone.some(
+  const averageTimeAllNotes = useAppSelector(
+    selectNoteGuessrAverageTimeAllNotes
+  );
+
+  const possibleNotes = useMemo(() => {
+    const guitarStringsNotes: NoteWithOctaveAndString[] = Object.keys(
+      GUITAR_STRING_NOTES
+    )
+      .filter((stringName: string) =>
+        settings.allowedStrings.includes(stringName as GuitarString)
+      )
+      .reduce((acc, stringName) => {
+        return [
+          ...acc,
+          ...GUITAR_STRING_NOTES[stringName as GuitarString].map((note) => ({
+            ...note,
+            string: stringName as GuitarString,
+          })),
+        ];
+      }, [] as NoteWithOctaveAndString[]);
+
+    return guitarStringsNotes
+      .filter((note) =>
+        settings.allowedSemitone.some(
           (allowedNote) =>
             allowedNote.name === note.name &&
             allowedNote.modifier === note.modifier
         )
-      ) {
-        setNoteToFind(note);
-        break;
+      )
+      .map((note) => ({
+        ...note,
+        avg: averageTimeAllNotes.find((n) => n.noteId === noteToNoteId(note))
+          ?.averageTime as number,
+      }));
+  }, [averageTimeAllNotes, settings.allowedSemitone, settings.allowedStrings]);
+
+  const newNoteToFind = useCallback(() => {
+    const possibleNotesSortedByAverageTime = possibleNotes.sort((a, b) => {
+      const averageTimeA = averageTimeAllNotes.find(
+        (note) => note.noteId === noteToNoteId(a)
+      )?.averageTime as number;
+      const averageTimeB = averageTimeAllNotes.find(
+        (note) => note.noteId === noteToNoteId(b)
+      )?.averageTime as number;
+      return averageTimeA - averageTimeB;
+    });
+
+    const infiniteItems = possibleNotesSortedByAverageTime.filter(
+      (item) => !isFinite(item.avg)
+    );
+
+    let note;
+
+    if (infiniteItems.length > 0) {
+      note = infiniteItems[Math.floor(Math.random() * infiniteItems.length)];
+    } else {
+      const finiteItems = possibleNotesSortedByAverageTime.filter((item) =>
+        isFinite(item.avg)
+      );
+      const totalWeight = finiteItems.reduce((sum, x) => sum + x.avg, 0);
+      if (totalWeight === 0) {
+        note = finiteItems[Math.floor(Math.random() * finiteItems.length)];
+      } else {
+        const r = Math.random() * totalWeight;
+        let cum = 0;
+        for (const n of finiteItems) {
+          cum += n.avg;
+          if (r < cum) {
+            note = n;
+            break;
+          }
+        }
+        if (!note) note = finiteItems[finiteItems.length - 1];
       }
     }
-  }, [config.allowedSemitone, config.allowedStrings]);
+
+    setNoteToFind(note);
+    setNoteStartTime(Date.now());
+  }, [possibleNotes, averageTimeAllNotes]);
 
   useEffect(() => {
     if (noteToFind && maintainedNote) {
-      if (noteToStr(noteToFind) === noteToStr(maintainedNote)) {
+      if (
+        noteToNoteId({
+          ...noteToFind,
+          string: undefined,
+        }) === noteToNoteId(maintainedNote)
+      ) {
+        const averageTimeMs =
+          (Date.now() - noteStartTime) / settings.allowedStrings.length;
+        dispatch(
+          noteGuessrAddAverageTime({
+            note: noteToNoteId(noteToFind),
+            averageTimeMs,
+          })
+        );
         config.onSuccess?.(noteToFind);
         newNoteToFind();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteToStr(noteToFind), noteToStr(maintainedNote), newNoteToFind]);
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    noteToNoteId(noteToFind),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    noteToNoteId(maintainedNote),
+    newNoteToFind,
+    noteStartTime,
+  ]);
 
   // loop engine to get the frequency
   const raf = useCallback(() => {
@@ -142,7 +221,7 @@ export default function useNoteGuessr(
   useEffect(() => {
     noteRef.current = note;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteToStr(note)]);
+  }, [noteToNoteId(note)]);
   useEffect(() => {
     if (!note) return;
     if (timeoutRef.current) {
@@ -151,13 +230,13 @@ export default function useNoteGuessr(
     setMaintainedNote(null);
     timeoutRef.current = setTimeout(() => {
       setMaintainedNote(note);
-    }, config.msToMaintainNote);
+    }, settings.msToMaintainNote);
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteToStr(note), config.msToMaintainNote]);
+  }, [noteToNoteId(note), settings.msToMaintainNote]);
 
   return {
     playing,
@@ -165,7 +244,6 @@ export default function useNoteGuessr(
     stop,
     frequency,
     note,
-    stringToFind,
     noteToFind,
     maintainedNote,
     startTime,

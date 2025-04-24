@@ -4,9 +4,13 @@
   "start": "Démarrer",
   "stop": "Arrêter",
   "currentNote": "Note actuelle",
+  "averageTime": "Temps moyen",
   "time": "Temps",
   "settings": {
     "allowedStrings": "Corde possible",
     "allowedSemitone": "Note possible"
+  },
+  "stats": {
+    "title": "Stats"
   }
 }

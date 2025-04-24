@@ -1,14 +1,18 @@
-import { GuitarString, Note } from "@/types/note";
+import { useAppSelector } from "@/flux/hooks";
+import { selectSettingsNotation } from "@/flux/settings/selector";
+import useNotes from "@/hooks/useNote";
+import { NoteWithOctaveAndString } from "@/types/note";
 import { useTranslations } from "next-intl";
 
 export default function NoteGuessrNoteToFind({
-  stringToFind,
   noteToFind,
 }: {
-  stringToFind: GuitarString;
-  noteToFind: Note;
+  noteToFind: NoteWithOctaveAndString;
 }) {
   const t = useTranslations();
+
+  const notes = useNotes([noteToFind]);
+  const settingsNotation = useAppSelector(selectSettingsNotation);
 
   return (
     <div className="flex flex-col self-baseline">
@@ -16,15 +20,17 @@ export default function NoteGuessrNoteToFind({
         <p className="text-body2 text-grey-5">
           {t("features.noteGuessr.string")}
         </p>
-        <p className="text-[60px]">{t(`note.eu.${stringToFind}`)} </p>
+        <p className="text-[60px]">
+          {t(`note.${settingsNotation}.${noteToFind.string}`)}{" "}
+        </p>
       </div>
       <div className="flex flex-col">
         <p className="text-body2 text-grey-5">
           {t("features.noteGuessr.note")}
         </p>
         <p className="text-[60px]">
-          {t(`note.eu.${noteToFind.name}`)}
-          {noteToFind.modifier}
+          {notes[0]?.name}
+          {notes[0]?.modifier}
         </p>
       </div>
     </div>

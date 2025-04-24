@@ -1,13 +1,20 @@
 {
+  "settings": {
+    "notation": {
+      "title": "Notation",
+      "eu": "EU (Do)",
+      "us": "US (C)"
+    }
+  },
   "eu": {
-    "c": "do",
-    "d": "ré",
-    "e": "mi",
-    "e_high": "mi aiguë",
-    "f": "fa",
-    "g": "sol",
-    "a": "la",
-    "b": "si"
+    "c": "Do",
+    "d": "Ré",
+    "e": "Mi",
+    "e_high": "Mi aiguë",
+    "f": "Fa",
+    "g": "Sol",
+    "a": "La",
+    "b": "Si"
   },
   "us": {
     "c": "C",
