@@ -49,11 +49,13 @@ export default function NoteGuessr() {
           )}
 
           <div className="flex flex-col justify-center items-center gap-[10px]">
-            <Link href="/noteGuessr/stats">
-              <p className="underline">
-                {t("features.noteGuessr.stats.title")} →
-              </p>
-            </Link>
+            {!noteGuessr.playing && (
+              <Link href="/noteGuessr/stats">
+                <p className="underline">
+                  {t("features.noteGuessr.stats.title")} →
+                </p>
+              </Link>
+            )}
 
             <UIButtonDepth
               onClick={onClick}
