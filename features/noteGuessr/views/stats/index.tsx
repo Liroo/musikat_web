@@ -13,7 +13,6 @@ export default function NoteGuessrStats() {
   const averageTime = useAppSelector(selectNoteGuessrAverageTimeAllNotes);
 
   const settingsNotation = useAppSelector(selectSettingsNotation);
-  console.log(averageTime);
 
   return (
     <div

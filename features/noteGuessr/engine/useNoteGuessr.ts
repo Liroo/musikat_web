@@ -144,12 +144,11 @@ export default function useNoteGuessr(
           string: undefined,
         }) === noteToNoteId(maintainedNote)
       ) {
-        const averageTimeMs =
-          (Date.now() - noteStartTime) / settings.allowedStrings.length;
+        const timeMs = Date.now() - noteStartTime;
         dispatch(
           noteGuessrAddAverageTime({
             note: noteToNoteId(noteToFind),
-            averageTimeMs,
+            averageTimeMs: timeMs - settings.msToMaintainNote,
           })
         );
         config.onSuccess?.(noteToFind);
