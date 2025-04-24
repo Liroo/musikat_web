@@ -148,9 +148,10 @@ export default function useNoteGuessr(
         dispatch(
           noteGuessrAddAverageTime({
             note: noteToNoteId(noteToFind),
-            averageTimeMs: timeMs - settings.msToMaintainNote,
+            averageTimeMs: Math.max(timeMs - settings.msToMaintainNote, 0),
           })
         );
+        setMaintainedNote(null);
         config.onSuccess?.(noteToFind);
         newNoteToFind();
       }
