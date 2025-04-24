@@ -40,7 +40,7 @@ export default function NoteGuessr() {
         success ? "bg-primary" : "bg-secondary"
       )}
     >
-      <div className="bg-white rounded-[16px] border border-black p-[40px] w-[400px]">
+      <div className="bg-white rounded-[16px] border border-black p-[40px] w-[400px] max-w-[95vw]">
         <div className="relative z-10 flex flex-col gap-[40px] justify-center items-center">
           {noteGuessr.playing ? (
             <NoteGuessrPlaying noteGuessr={noteGuessr} />

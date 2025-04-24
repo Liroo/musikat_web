@@ -20,7 +20,7 @@ export default function NoteGuessrStats() {
         "flex flex-col h-full w-full justify-center items-center transition-colors duration-150 relative bg-secondary"
       )}
     >
-      <div className="bg-white rounded-[16px] border border-black p-[40px] w-[500px] max-h-[80dvh] overflow-y-scroll">
+      <div className="bg-white rounded-[16px] border border-black p-[40px] w-[500px] max-w-[95vw] max-h-[80dvh] overflow-y-scroll">
         <Link href="/">
           <div className="mb-[20px]">
             <p className="underline">← {t("common.back")}</p>

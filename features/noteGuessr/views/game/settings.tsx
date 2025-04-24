@@ -62,6 +62,7 @@ export default function NoteGuessrSettings() {
     (notation: SettingsNotation) => {
       dispatch(settingsSetNotation(notation));
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [settingsNotation]
   );
 
