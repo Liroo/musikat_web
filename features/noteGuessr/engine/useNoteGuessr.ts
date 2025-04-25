@@ -115,14 +115,19 @@ export default function useNoteGuessr(
       const finiteItems = possibleNotesSortedByAverageTime.filter((item) =>
         isFinite(item.avg)
       );
-      const totalWeight = finiteItems.reduce((sum, x) => sum + x.avg, 0);
+
+      const weightExponent = 3;
+      const totalWeight = finiteItems.reduce(
+        (sum, x) => sum + Math.pow(x.avg, weightExponent),
+        0
+      );
       if (totalWeight === 0) {
         note = finiteItems[Math.floor(Math.random() * finiteItems.length)];
       } else {
         const r = Math.random() * totalWeight;
         let cum = 0;
         for (const n of finiteItems) {
-          cum += n.avg;
+          cum += Math.pow(n.avg, weightExponent);
           if (r < cum) {
             note = n;
             break;
