@@ -10,6 +10,7 @@ import {
   persistStore,
 } from "redux-persist";
 
+import intervalFindrSlice from "@/flux/intervalFindr/reducer";
 import listenerMiddleware from "@/flux/listenerMiddleware";
 import noteGuessrSlice from "@/flux/noteguessr/reducer";
 import settingsSlice from "@/flux/settings/reducer";
@@ -23,6 +24,7 @@ export const makeStore = () => {
     [statusSlice.name]: statusSlice.reducer,
     [toastSlice.name]: toastSlice.reducer,
     [noteGuessrSlice.name]: noteGuessrSlice.reducer,
+    [intervalFindrSlice.name]: intervalFindrSlice.reducer,
     [settingsSlice.name]: settingsSlice.reducer,
   });
 
@@ -31,7 +33,11 @@ export const makeStore = () => {
     version: 1,
     storage,
     stateReconciler: autoMergeLevel2,
-    whitelist: [noteGuessrSlice.name, settingsSlice.name],
+    whitelist: [
+      noteGuessrSlice.name,
+      intervalFindrSlice.name,
+      settingsSlice.name,
+    ],
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

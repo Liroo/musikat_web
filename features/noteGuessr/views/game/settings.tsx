@@ -67,7 +67,7 @@ export default function NoteGuessrSettings() {
   );
 
   return (
-    <div className="flex flex-1 flex-col gap-[30px] items-baseline self-stretch">
+    <div className="flex flex-1 flex-col gap-[10px] items-baseline self-stretch">
       <div className="flex flex-col gap-[10px]">
         <p className="text-body1">
           {t("features.noteGuessr.settings.allowedStrings")}

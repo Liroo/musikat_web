@@ -4,11 +4,6 @@ class MicInput {
   private analyser: AnalyserNode | null = null;
   private source: MediaStreamAudioSourceNode | null = null;
 
-  /**
-   * Request access to the user's microphone
-   * @returns Promise that resolves when access is granted
-   * @throws Error if access is denied or if the browser doesn't support the required APIs
-   */
   async requestAudioInput(): Promise<void> {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({
@@ -38,33 +33,18 @@ class MicInput {
     }
   }
 
-  /**
-   * Get the current audio stream
-   * @returns The MediaStream object if available, null otherwise
-   */
   getStream(): MediaStream | null {
     return this.stream;
   }
 
-  /**
-   * Get the audio analyzer node
-   * @returns The AnalyserNode if available, null otherwise
-   */
   getAnalyser(): AnalyserNode | null {
     return this.analyser;
   }
 
-  /**
-   * Get the current audio context
-   * @returns The AudioContext if available, null otherwise
-   */
   getAudioContext(): AudioContext | null {
     return this.audioContext;
   }
 
-  /**
-   * Clean up resources and stop the audio stream
-   */
   cleanup(): void {
     if (this.stream) {
       this.stream.getTracks().forEach((track) => track.stop());

@@ -1,0 +1,18 @@
+{
+  "P1": "Unisson",
+  "m2": "Seconde mineure",
+  "M2": "Seconde majeure",
+  "m3": "Troisième mineure",
+  "M3": "Troisième majeure",
+  "P4": "Quarte juste",
+  "A4": "Quarte augmentée",
+  "d4": "Quarte diminuée",
+  "P5": "Quinte juste",
+  "A5": "Quinte augmentée",
+  "d5": "Quinte diminuée",
+  "m6": "Sixte mineure",
+  "M6": "Sixte majeure",
+  "m7": "Septième mineure",
+  "M7": "Septième majeure",
+  "P8": "Octave juste"
+}

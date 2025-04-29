@@ -21,7 +21,7 @@ export default function NoteGuessrStats() {
       )}
     >
       <div className="bg-white rounded-[16px] border border-black p-[40px] w-[500px] max-w-[95vw] max-h-[80dvh] overflow-y-scroll">
-        <Link href="/">
+        <Link href="/noteGuessr">
           <div className="mb-[20px]">
             <p className="underline">← {t("common.back")}</p>
           </div>

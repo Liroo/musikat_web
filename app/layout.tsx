@@ -29,9 +29,9 @@ export default async function RootLayout({
   const locale = await getLocale();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className="overflow-hidden">
       <body
-        className={`${inter.variable} ${monumentExtended.variable} antialiased leading-[1.1] tracking-[-0.02em]`}
+        className={`${inter.variable} ${monumentExtended.variable} antialiased leading-[1.1] tracking-[-0.02em] font-sans`}
       >
         <NextIntlClientProvider>
           <StoreProvider>{children}</StoreProvider>

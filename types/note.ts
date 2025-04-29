@@ -1,5 +1,5 @@
 export type NoteName = "c" | "d" | "e" | "f" | "g" | "a" | "b";
-export type NoteModifier = "b" | "#" | "";
+export type NoteModifier = "" | "#" | "b" | "##" | "bb";
 
 export interface Note {
   name: NoteName;
@@ -15,6 +15,26 @@ export interface NoteWithOctaveAndString extends NoteWithOctave {
   string: GuitarString;
 }
 
+// Natural semitone of C-major between two letters
+export const NOTE_NATURAL: Record<NoteWithOctave["name"], number> = {
+  c: 0,
+  d: 2,
+  e: 4,
+  f: 5,
+  g: 7,
+  a: 9,
+  b: 11,
+};
+export const NOTE_LETTERS: NoteWithOctave["name"][] = [
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "a",
+  "b",
+];
+
 export const SEMITONE_LIST: Note[] = [
   { name: "c", modifier: "" },
   { name: "c", modifier: "#" },
@@ -29,6 +49,23 @@ export const SEMITONE_LIST: Note[] = [
   { name: "a", modifier: "#" },
   { name: "b", modifier: "" },
 ];
+
+function noteToSemitone(note: NoteWithOctave): number {
+  let offset = 0;
+  if (note.modifier === "##") offset = 2;
+  else if (note.modifier === "#") offset = 1;
+  else if (note.modifier === "b") offset = -1;
+  else if (note.modifier === "bb") offset = -2;
+
+  return NOTE_NATURAL[note.name] + offset + (note.octave + 1) * 12;
+}
+
+export function areNotesEnharmonicallyEqual(
+  n1: NoteWithOctave,
+  n2: NoteWithOctave
+): boolean {
+  return noteToSemitone(n1) === noteToSemitone(n2);
+}
 
 export const noteToNoteId = (
   note:
@@ -47,9 +84,7 @@ export const noteIdToNote = (noteId: string) => {
   return { name, modifier, octave, string };
 };
 
-/**
- * Given a note+octave, returns its frequency in Hz (A4 = 440 Hz).
- */
+// Given a note+octave, returns its frequency in Hz (A4 = 440 Hz).
 export function noteToFrequency(note: NoteWithOctave): number {
   const semitoneIndex = SEMITONE_LIST.findIndex(
     (n) => n.name === note.name && n.modifier === note.modifier
@@ -63,19 +98,14 @@ export function noteToFrequency(note: NoteWithOctave): number {
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
-/**
- * Given a frequency in Hz, returns the nearest note name, modifier, and octave.
- */
+// Given a frequency in Hz, returns the nearest note name, modifier, and octave.
 export function frequencyToNote(freq: number): Note | null {
   if (freq <= 0) return null;
 
-  // compute the (possibly fractional) MIDI number
   const midiFloat = 12 * Math.log2(freq / 440) + 69;
   const midi = Math.round(midiFloat);
 
-  // semitone within octave = 0..11
   const semitoneIndex = ((midi % 12) + 12) % 12;
-  // compute octave back: MIDI 0 = C–1, MIDI 12 = C0, etc.
   const octave = Math.floor(midi / 12) - 1;
 
   const { name, modifier } = SEMITONE_LIST[semitoneIndex];

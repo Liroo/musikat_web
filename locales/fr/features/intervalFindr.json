@@ -1,0 +1,11 @@
+{
+  "start": "Démarrer",
+  "stop": "Arrêter",
+  "stats": {
+    "title": "Stats"
+  },
+  "settings": {
+    "allowedInterval": "Intervalles possible",
+    "allowedInvertedInterval": "Intervalles descendant en plus ?"
+  }
+}
