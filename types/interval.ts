@@ -79,7 +79,6 @@ export function applyIntervalToNote(
     const naturalDist = targetNat - rootTotal;
     const delta = semis - naturalDist;
     let modifier = "";
-    console.log(delta, newLetter, modifier);
     if (delta === 1) modifier = "#";
     else if (delta === 2) modifier = "##";
     else if (delta === -1) modifier = "b";
