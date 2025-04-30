@@ -3,6 +3,7 @@ import {
   NOTE_NATURAL,
   NoteModifier,
   NoteWithOctave,
+  SEMITONE_LIST,
 } from "@/types/note";
 
 export type Interval = {
@@ -34,6 +35,7 @@ function parseInterval(key: string): {
   const interval = INTERVALS_LIST.find((iv) => iv.keys.includes(key));
   if (!interval) throw new Error(`Unknown interval key ${key}`);
   // the number part of the key is the diatonic size, e.g. "2" in "M2"
+  if (key === "TT") return { diatonicSteps: 4, semitones: 6 };
   const numMatch = key.match(/\d+/);
   const diatonic = numMatch ? parseInt(numMatch[0], 10) : 2;
   return { diatonicSteps: diatonic, semitones: interval.semitone };
@@ -60,6 +62,8 @@ export function applyIntervalToNote(
     semitones: number,
     direction: 1 | -1 = 1
   ): NoteWithOctave {
+    if (steps === 1) return { ...root };
+
     const rootLetterIdx = NOTE_LETTERS.indexOf(root.name);
     const rawIdx = rootLetterIdx + direction * (steps - 1);
     const targetLetterIdx = ((rawIdx % 7) + 7) % 7;
@@ -75,12 +79,27 @@ export function applyIntervalToNote(
     const naturalDist = targetNat - rootTotal;
     const delta = semis - naturalDist;
     let modifier = "";
+    console.log(delta, newLetter, modifier);
     if (delta === 1) modifier = "#";
     else if (delta === 2) modifier = "##";
     else if (delta === -1) modifier = "b";
     else if (delta === -2) modifier = "bb";
-    else if (delta !== 0)
-      throw new Error(`Impossible d'exprimer l'intervalle…`);
+    else if (delta !== 0) {
+      // fallback enharmonique : on retombe sur la transpo par demi-tons
+      const rootMidi =
+        NOTE_NATURAL[root.name] +
+        modifierToOffset(root.modifier) +
+        (root.octave + 1) * 12;
+      const targetMidi = rootMidi + direction * semitones;
+      const semitoneIndex = ((targetMidi % 12) + 12) % 12;
+      const octave = Math.floor(targetMidi / 12) - 1;
+      const { name: enhName, modifier: enhMod } = SEMITONE_LIST[semitoneIndex];
+      return {
+        name: enhName as NoteWithOctave["name"],
+        modifier: enhMod as NoteModifier,
+        octave,
+      };
+    }
 
     return {
       name: newLetter,
@@ -88,6 +107,7 @@ export function applyIntervalToNote(
       octave: root.octave + wraps,
     };
   }
+
   const { diatonicSteps, semitones } = parseInterval(intervalKey);
   const ascending = transpose(root, diatonicSteps, semitones, +1);
   const descending = transpose(root, diatonicSteps, semitones, -1);

@@ -35,6 +35,8 @@ export const NOTE_LETTERS: NoteWithOctave["name"][] = [
   "b",
 ];
 
+export const NOTE_MODIFIERS: NoteModifier[] = ["", "#", "b", "##", "bb"];
+
 export const SEMITONE_LIST: Note[] = [
   { name: "c", modifier: "" },
   { name: "c", modifier: "#" },

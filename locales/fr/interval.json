@@ -1,4 +1,7 @@
 {
+  "interval": "Intervalle",
+  "ascending": "Ascendant",
+  "descending": "Descendant",
   "P1": "Unisson",
   "m2": "Seconde mineure",
   "M2": "Seconde majeure",

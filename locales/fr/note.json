@@ -1,4 +1,6 @@
 {
+  "note": "Note",
+  "modifier": "Modificateur",
   "settings": {
     "notation": {
       "title": "Notation",

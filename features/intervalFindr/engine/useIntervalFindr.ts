@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/flux/hooks";
+import { useAppSelector } from "@/flux/hooks";
 import { selectIntervalFindrSettings } from "@/flux/intervalFindr/selector";
 import { applyIntervalToNote } from "@/types/interval";
 import {
@@ -21,6 +21,7 @@ export type IntervalFindr = {
   };
   generateQuestion: () => void;
   answerQuestion: (note: Note) => void;
+  questionIndex: number;
 };
 
 export interface IntervalFindrConfig {
@@ -43,12 +44,10 @@ export default function useIntervalFindr(
   const [startTime, setStartTime] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
 
-  const [questionStartTime, setQuestionStartTime] = useState<number>(0);
-  const dispatch = useAppDispatch();
-
   const [rootNote, setRootNote] = useState<NoteWithOctave | null>(null);
   const [interval, setInterval] = useState<string | null>(null);
   const [direction, setDirection] = useState<1 | -1>(1);
+  const [questionIndex, setQuestionIndex] = useState(0);
 
   const randomNote = () => {
     const noteLetter = NOTE_LETTERS[Math.floor(Math.random() * 7)];
@@ -82,7 +81,7 @@ export default function useIntervalFindr(
     randomNote();
     randomInterval();
     randomDirection();
-    setQuestionStartTime(Date.now());
+    setQuestionIndex(questionIndex + 1);
   };
 
   const answerQuestion = (note: Note) => {
@@ -118,6 +117,7 @@ export default function useIntervalFindr(
     setStartTime(Date.now());
     generateQuestion();
     setPlaying(true);
+    setQuestionIndex(0);
   };
 
   // stop the note guessr
@@ -137,5 +137,6 @@ export default function useIntervalFindr(
       direction,
     },
     generateQuestion,
+    questionIndex,
   };
 }

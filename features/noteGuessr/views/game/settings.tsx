@@ -2,9 +2,6 @@ import UIInputCheckbox from "@/components/ui/input/checkbox";
 import { useAppDispatch, useAppSelector } from "@/flux/hooks";
 import { noteGuessrSetSettings } from "@/flux/noteguessr/reducer";
 import { selectNoteGuessrSettings } from "@/flux/noteguessr/selector";
-import { settingsSetNotation } from "@/flux/settings/reducer";
-import { selectSettingsNotation } from "@/flux/settings/selector";
-import { SettingsNotation } from "@/flux/settings/type";
 import {
   GUITAR_STRING_NOTES,
   GuitarString,
@@ -19,7 +16,6 @@ export default function NoteGuessrSettings() {
   const t = useTranslations();
 
   const settings = useAppSelector(selectNoteGuessrSettings);
-  const settingsNotation = useAppSelector(selectSettingsNotation);
   const onChangeAllowedStrings = useCallback(
     (string: GuitarString, checked: boolean) => {
       const newAllowedStrings = [...settings.allowedStrings];
@@ -56,14 +52,6 @@ export default function NoteGuessrSettings() {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [settings.allowedSemitone, settings.allowedStrings]
-  );
-
-  const onChangeNotation = useCallback(
-    (notation: SettingsNotation) => {
-      dispatch(settingsSetNotation(notation));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [settingsNotation]
   );
 
   return (
@@ -126,34 +114,6 @@ export default function NoteGuessrSettings() {
               />
             </div>
           ))}
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-[10px]">
-        <p className="text-body1">{t("note.settings.notation.title")}</p>
-        <div className="flex flex-row gap-[10px] items-center justify-center">
-          <div className="flex flex-col gap-[2px] items-center justify-center">
-            <p className="text-body4 text-grey-5">
-              {t(`note.settings.notation.eu`)}
-            </p>
-            <UIInputCheckbox
-              checked={settingsNotation === "eu"}
-              onChange={() => {
-                onChangeNotation("eu");
-              }}
-            />
-          </div>
-          <div className="flex flex-col gap-[2px] items-center justify-center">
-            <p className="text-body4 text-grey-5">
-              {t(`note.settings.notation.us`)}
-            </p>
-            <UIInputCheckbox
-              checked={settingsNotation === "us"}
-              onChange={() => {
-                onChangeNotation("us");
-              }}
-            />
-          </div>
         </div>
       </div>
     </div>

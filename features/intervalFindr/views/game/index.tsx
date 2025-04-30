@@ -5,19 +5,32 @@ import IntervalFindrSettings from "@/features/intervalFindr/views/game/settings"
 import { twMerge } from "@/utils/twMerge";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function IntervalFindr() {
   const t = useTranslations();
+  const [success, setSuccess] = useState(false);
+  const [failure, setFailure] = useState(false);
+
   const intervalFindr = useIntervalFindr({
-    onSuccess: () => {},
-    onFailure: () => {},
+    onSuccess: () => {
+      setSuccess(true);
+    },
+    onFailure: () => {
+      setFailure(true);
+    },
   });
+
+  useEffect(() => {
+    setSuccess(false);
+    setFailure(false);
+  }, [intervalFindr.questionIndex]);
 
   return (
     <div
       className={twMerge(
         "flex flex-col h-full w-full justify-center items-center transition-colors duration-150 relative",
-        false ? "bg-primary" : "bg-tertiary"
+        success ? "bg-primary" : "bg-tertiary"
       )}
     >
       <div className="bg-white rounded-[16px] border border-black p-[40px] w-[400px] max-w-[95vw]">
@@ -30,20 +43,16 @@ export default function IntervalFindr() {
         )}
         <div className="relative z-10 flex flex-col gap-[40px] justify-center items-center">
           {intervalFindr.playing ? (
-            <IntervalFindrPlaying intervalFindr={intervalFindr} />
+            <IntervalFindrPlaying
+              intervalFindr={intervalFindr}
+              success={success}
+              failure={failure}
+            />
           ) : (
             <IntervalFindrSettings />
           )}
 
           <div className="flex flex-col justify-center items-center gap-[10px]">
-            {!intervalFindr.playing && (
-              <Link href="/intervalFindr/stats">
-                <p className="underline">
-                  {t("features.intervalFindr.stats.title")} →
-                </p>
-              </Link>
-            )}
-
             <UIButtonDepth
               onClick={
                 intervalFindr.playing ? intervalFindr.stop : intervalFindr.start
