@@ -51,11 +51,11 @@ export default function useIntervalFindr(
 
   const randomNote = () => {
     const noteLetter = NOTE_LETTERS[Math.floor(Math.random() * 7)];
-    const modifier = ["", "#", "b"][Math.floor(Math.random() * 3)];
+    // const modifier = ["", "#", "b"][Math.floor(Math.random() * 3)];
 
     const note = {
       name: noteLetter,
-      modifier,
+      modifier: "",
       octave: 4,
     };
 

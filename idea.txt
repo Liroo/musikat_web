@@ -1,7 +1,1 @@
-POUR TOUTES LES NOTES,
-FAIRE UN TABLEAU DANS UN FLUX AVEC LE TEMPS MOYEN DE REPONSE (donc calculer le temps moyen de réponse pour chaque note, seulement les 5 dernières réponses avec ces notes)
-
-TRIER LES NOTES PAR TEMPS MOYEN DE REPONSE
-FAIRE UN TABLEAU DE PONDERATION POUR FAVORISER LE PRACTICE DES NOTES QUI ONT LE PLUS DE PROBLEME (TEMPS MOYEN DE REPONSE LE PLUS ELEVE)
-
-AUSSI FAIRE UN SCORING (juste le nombre de notes correctes par minute par exemple)
+Rajouter les sons pour l'interval findr, comme ça on ecoute les intervalles en plus pour habituer l'oreille
